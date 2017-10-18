@@ -56,10 +56,14 @@ ui <- fluidPage(
 server <- function(input, output) {
    
   library("deSolve")
-  parameters <- c(alpha = input$alpha,
-                  beta = input$beta ,
-                  gamma=input$gamma,
-                  delta=input$delta
+   myOutput <- reactive(
+      
+    
+    parameters <- c(alpha =  inputPanel("alpha"),
+                     beta = inputPanel("beta"),
+                     gamma=inputPanel("gamma"),
+                     delta=inputPanel("delta")),
+                                      
   )
   pH=runif(1,0,1)
   pP=runif(1,0,1)
