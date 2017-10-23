@@ -57,6 +57,10 @@ ui <- fluidPage(
                   max = 1000,
                   value = 10, 
                   animate = TRUE)
+      ,
+      h5("Developed at University of Oklahoma")
+      ,
+      img(src='https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/Lotka_Volterra_dynamics.svg/1280px-Lotka_Volterra_dynamics.svg.png', height=100, width=100,align = "right")
     ),
     
     # Show a plot of the generated distribution
@@ -110,6 +114,7 @@ server <- function(input, output) {
   output$distPlot1 <- renderPlot({
     
     plot(myOutput()$Hout,xlab = "time", ylab = "Red for H, Blue for P",col="red")
+    lines(myOutput()$Hout,xlab = "time", ylab = "Red for H, Blue for P",col="red")
     lines(myOutput()$Pout,xlab = "time", ylab = "P",col="blue")
     mtext(outer = TRUE, side = 3, "Lokta Voltera test", cex = 1.5)
     
@@ -124,7 +129,8 @@ server <- function(input, output) {
   
   output$distPlot2 <- renderPlot({
     
-    plot(x=myOutput()$Hout,y=myOutput()$Pout,xlab = "H", ylab = "P",col="green")
+    plot(x=myOutput()$Hout,y=myOutput()$Pout,xlab = "H", ylab = "P",col="blue")
+    lines(x=myOutput()$Hout,y=myOutput()$Pout,xlab = "H", ylab = "P",col="blue")
     output$value <- renderText({ "The classic predator prey model of interacting population is due to Alfred Lotka and Vito Voltera. It was first formulated in 1920s. It serves as a valid starting point for most satisfactory models for interacting populations. This application helps us see the basic relationship between two species - predator and prey. The term 'predation' should be understood in wide sense of interaction of type +- which covers predation in the strict sense as well as host-parasitoid relationships and interaction of herbivores and the plants they eat. Here, P is predator and H is prey. -alpha- is net relative rate of growth for preys. Preys are caught by predators at a rate -beta- that is proportional to H(t) and P(t).-Gamma- for predators represents mortality.-delta- times the product of population of predators and prey at that time gives rate of predator increase resulting from it.  (Source - Mathematical Modeling in the Life Sciences by Doucet and Sloep)" })
     
     
