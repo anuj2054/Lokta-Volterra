@@ -103,7 +103,8 @@ ui <- fluidPage(
      h3("Modifiable 3D Plot"),
        plotlyOutput("plot"),
      h3("3 species against time"),
-      plotOutput("distPlot2")
+      plotOutput("distPlot2"),
+     img(src='http://images.slideplayer.com/28/9383075/slides/slide_2.jpg', align = "left", length = 500, width = 500)
       
     )
   )
