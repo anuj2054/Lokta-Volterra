@@ -14,63 +14,74 @@ library(deSolve)
 ui <- fluidPage(
   
   # Application title
-  titlePanel("Guruacharya Timilsina app for Lokta Volterra Equations"),
-  verbatimTextOutput("value"),
-  
+  titlePanel(" A Learning Environment for Lokta Voltera Equations"),
+  h5("The classic predator prey model of interacting population is due to Alfred Lotka and Vito Voltera. It was first formulated in 1920s. It serves as a valid starting point for most satisfactory models for interacting populations."),
+    
   # Sidebar with a slider input for number of bins 
   sidebarLayout(
-    sidebarPanel(
+    
+        sidebarPanel(
+      
       sliderInput("alpha",
-                  "Value of alpha:",
+                  "alpha: Prey growth rate",
                   min = 0.1,
                   max = 0.9,
                   value = 0.2)
       ,
       sliderInput("beta",
-                  "Value of beta:",
+                  "beta: Preys mortality rate",
                   min = 0.001,
                   max = 0.009,
                   value = 0.002)
       ,
       sliderInput("gamma",
-                  "Value of gamma:",
+                  "gamma: predator mortality rate",
                   min = 0.01,
                   max = 0.90,
                   value = 0.04)
       ,
       sliderInput("delta",
-                  "Value of delta:",
+                  "delta: Rate of predator growth",
                   min = 0.0001,
                   max = 0.0009,
                   value = 0.0008)
       ,
       sliderInput("initialpreypopulation",
-                  "Value of initial prey population:",
+                  "Initial prey population:",
                   min = 1,
                   max = 1000,
                   value = 200, 
                   animate = TRUE)
       ,
       sliderInput("initialpredatorpopulation",
-                  "Value of initial predator population:",
+                  "Initial predator population:",
                   min = 1,
                   max = 1000,
                   value = 10, 
-                  animate = TRUE)
-      ,
-      h5("Developed at University of Oklahoma")
-      ,
-      img(src='https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/Lotka_Volterra_dynamics.svg/1280px-Lotka_Volterra_dynamics.svg.png', height=100, width=100,align = "right")
+                  animate = TRUE),
+      img(src='http://file.scirp.org/Html/2-1100253/ee820e7f-fb94-4d8f-8b8c-f1b30bbb08a3.jpg', align = "left", length = 200, width = 200)
+      
     ),
     
     # Show a plot of the generated distribution
     mainPanel(
+     # tabsetPanel(
+       # tabPanel("Population versus Time", plotOutput("distPlot1")),
       plotOutput("distPlot1"),
-      plotOutput("distPlot2")
+      plotOutput("distPlot2"),
+        #tabPanel("Host Versus Predator", plotOutput("distPlot2")),
+        
+       # img(src='http://maps.unomaha.edu/maher/linked/week3/preypreddiagram.jpeg', align = "left", length = 500, width = 500)
+       img(src='http://sprott.physics.wisc.edu/lectures/forest/img020.GIF', align = "left", length = 300, width = 300)
       
+      #  img(src='http://images.slideplayer.com/28/9383075/slides/slide_2.jpg', align = "left", length = 500, width = 500)
+        
+      #)
     )
   )
 )
+
+
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
@@ -114,7 +125,7 @@ server <- function(input, output) {
   output$distPlot1 <- renderPlot({
     
     plot(myOutput()$Hout,xlab = "time", ylab = "Red for H, Blue for P",col="red")
-    lines(myOutput()$Hout,xlab = "time", ylab = "Red for H, Blue for P",col="red")
+    lines(myOutput()$Hout,xlab = "time",col="red")
     lines(myOutput()$Pout,xlab = "time", ylab = "P",col="blue")
     mtext(outer = TRUE, side = 3, "Lokta Voltera test", cex = 1.5)
     
@@ -131,8 +142,6 @@ server <- function(input, output) {
     
     plot(x=myOutput()$Hout,y=myOutput()$Pout,xlab = "H", ylab = "P",col="blue")
     lines(x=myOutput()$Hout,y=myOutput()$Pout,xlab = "H", ylab = "P",col="blue")
-    output$value <- renderText({ "The classic predator prey model of interacting population is due to Alfred Lotka and Vito Voltera. It was first formulated in 1920s. It serves as a valid starting point for most satisfactory models for interacting populations. This application helps us see the basic relationship between two species - predator and prey. The term 'predation' should be understood in wide sense of interaction of type +- which covers predation in the strict sense as well as host-parasitoid relationships and interaction of herbivores and the plants they eat. Here, P is predator and H is prey. -alpha- is net relative rate of growth for preys. Preys are caught by predators at a rate -beta- that is proportional to H(t) and P(t).-Gamma- for predators represents mortality.-delta- times the product of population of predators and prey at that time gives rate of predator increase resulting from it.  (Source - Mathematical Modeling in the Life Sciences by Doucet and Sloep)" })
-    
     
   })
   
