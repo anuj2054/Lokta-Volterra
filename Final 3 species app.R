@@ -10,18 +10,20 @@
 library(shiny)
 library(deSolve)
 library(scatterplot3d)
+library(plotly)
 # Define UI for application that draws a histogram
 ui <- fluidPage(
   
   # Application title
-  titlePanel("Guruacharya Timilsina app for Three Species Lotka Voltera Equations"),
-  verbatimTextOutput("value"),
+  titlePanel("A Learning Environment for 3 species Lokta Voltera Equations"),
   
+  h4("The classic predator prey model of interacting population is due to Alfred Lotka and Vito Voltera. It was first formulated in 1920s. It serves as a valid starting point for most satisfactory models for interacting populations. "),
   # Sidebar with a slider input for number of bins 
   sidebarLayout(
     sidebarPanel(
+      
       sliderInput("a",
-                  "Value of a:",
+                  "Adjust value of a: natural growth rate of the prey in the absence of predators",
                   min = 0.1,
                   max = 0.9,
                   value = 0.2, 
@@ -29,28 +31,29 @@ ui <- fluidPage(
       
       ,
       sliderInput("b",
-                  "Value of b:",
+                  "Adjust value of b: the effect of predation on the prey",
                   min = 0.001,
                   max = 0.009,
                   value = 0.002, 
                   animate = TRUE)
       ,
       sliderInput("c",
-                  "Value of c:",
+                  "Adjust value of c: natural death rate of the predator in the absence of prey",
                   min = 0.01,
                   max = 0.90,
                   value = 0.04,
                   animate = TRUE)
       ,
       sliderInput("d",
-                  "Value of d:",
+                  "Adjust Value of d: efficiency and propagation rate of the predator in the presence of
+                  prey ",
                   min = 0.0001,
                   max = 0.0009,
                   value = 0.0004, 
                   animate = TRUE)
       ,
       sliderInput("e",
-                  "Value of e:",
+                  "Adjust value of e: represents the effect of predation on species y by species z",
                   min = 0.0001,
                   max = 0.0009,
                   value = 0.0004, 
@@ -59,20 +62,20 @@ ui <- fluidPage(
       ,
       
       sliderInput("f",
-                  "Value of f:",
+                  "Adjust value of f: natural death rate of the predator z in the absence of prey",
                   min = 0.00001,
                   max = 0.0001,
                   value = 0.0004,
                   animate = TRUE)
       ,
       sliderInput("g",
-                  "Value of g:",
+                  "Adjust value of g: represents the efficiency and propagation rate of the predator z in the presence of prey",
                   min = 0.00009,
                   max = 0.0009,
                   value = 0.00008, 
                   animate = TRUE)
       
-            ,
+      ,
       
       sliderInput("initialfirstpopulation",
                   "Value of initial first species population:",
@@ -98,9 +101,16 @@ ui <- fluidPage(
     
     # Show a plot of the generated distribution
     mainPanel(
-      plotOutput("distPlot1"),
-      plotOutput("distPlot2")
-      
+      tabsetPanel(
+        tabPanel("Plain Uninteractive 3D", plotOutput("distPlot1")),
+        
+        tabPanel("Interactive 3D", h5("This might take a while to load"), plotlyOutput("plot")),
+        
+        tabPanel("Plot vs time", plotOutput("distPlot2")),
+        img(src='http://www.sheppardsoftware.com/content/animals/kidscorner/images/foodchain/simplechain3.gif', align = "left", length = 500, width = 500),
+        
+        img(src='http://images.slideplayer.com/28/9383075/slides/slide_2.jpg', align = "left", length = 500, width = 500)
+      ) 
     )
   )
 )
@@ -108,6 +118,7 @@ ui <- fluidPage(
 # Define server logic required to draw a histogram
 server <- function(input, output) {
   myOutput <- reactive({
+    
     
     parameters <- c(a = input$a,
                     b = input$b ,
@@ -150,7 +161,13 @@ server <- function(input, output) {
     
   })
   
-  
+  output$plot <- renderPlotly(
+    plot_ly( x = myOutput()$Hout, y = myOutput()$Pout, z = myOutput()$Tout, colors = NULL, linetypes = NULL, width = NULL, height = NULL ) %>%
+      add_markers() %>% 
+      layout(scene = list(xaxis = list(title = 'First Species'),
+                          yaxis = list(title = 'Second Species'),
+                          zaxis = list(title = 'Third Species'))
+      ))
   output$distPlot2 <- renderPlot({
     
     plot(myOutput()$Hout,xlab = "time", ylab = "red for x, blue for y and green for z",col="red")
@@ -172,9 +189,6 @@ server <- function(input, output) {
     
     
     scatterplot3d(x = myOutput()$Hout, y = myOutput()$Pout, z = myOutput()$Tout, main="3D plot", xlab="Values of x", ylab="Values of y", zlab="values of z", axis = TRUE, tick.marks = TRUE, label.tick.marks = TRUE, grid = TRUE, box = TRUE, highlight.3d = TRUE)
-    output$value <- renderText({ "The classic predator prey model of interacting population is due to Alfred Lotka and Vito Voltera. It was first formulated in 1920s. It serves as a valid starting point for most satisfactory models for interacting populations. This application helps us see the basic relationship between three species interaction. It is modified form of two species Lotka Voltera equation. a,b,c,d,e,f and g are constants of three variable non linear equations. a represents the natural growth rate of the prey in the absence of predators, b represents the effect of predation on the prey, c represents the natural death rate of the predator in the absence of prey, d represents the efficiency and propagation rate of the predator in the presence of
-prey. e represents the effect of predation on species y by species z, f represents the natural death rate of the predator z in the absence of prey and . g represents the efficiency and propagation rate of the predator z in the presence of
-prey.   (Source - Mathematical Modeling in the Life Sciences by Doucet and Sloep)" })
     
   })
   
